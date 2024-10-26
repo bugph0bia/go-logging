@@ -1,31 +1,37 @@
 # go-logging
 
-slog と lumberjack を組み合わせたロギング＋ログローテーション  
+slog と lumberjack を組み合わせた簡易ロギング＆ログローテーション  
 
 
 ## 使用方法
 
 ```go
+package main
 
-// デフォルトパラメータでロガー生成
-logger := logging.NewLogger("log.txt")
-// ログ出力
-logger.Debug("message")
-logger.Info("message", "attr1", 10)
-logger.Warn("message", "attr1", 10, "attr2", 20)
-logger.Error("message")
+import "github.com/bugph0bia/go-logging"
 
-// 以下のログが出力される
+func main() {
+    // デフォルトパラメータでロガー生成
+    logger := logging.NewLogger("log.txt")
+    // ログ出力
+    logger.Debug("message")
+    logger.Info("message", "attr1", 10)
+    logger.Warn("message", "attr1", 10, "attr2", 20)
+    logger.Error("message")
+}
+
+// 以下のフォーマットでログが出力される
 //
 // 2024/10/24 11:22:33 DEBUG: message
 // 2024/10/24 11:22:33 INFO [attr1=10]: message
 // 2024/10/24 11:22:33 WARN [attr1=10, attr2=20]: message
 // 2024/10/24 11:22:33 ERROR: message
+```
 
+パラメータを変更する場合は `logging.NewLogger` を呼び出す前に値を変更しておく。  
+下記は設定できるパラメータとデフォルト値の例。  
 
-// パラメータを変更する場合は logging.NewLogger() の前に値を変更しておく
-// 下記はデフォルト値を設定する例
-
+```go
 // 出力するログレベル
 logging.Level = slog.LevelInfo
 
@@ -45,8 +51,8 @@ logging.MaxBackups = 10
 logging.MaxAge = 0
 
 // バックアップファイルの時刻をローカルタイムにするかどうか
-logging.LocalTime bool = true
+logging.LocalTime = true
 
 // バックアップファイルを gzip 圧縮するかどうか
-logging.Compress bool = false
+logging.Compress = false
 ```
