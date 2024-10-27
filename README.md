@@ -28,31 +28,53 @@ func main() {
 // 2024/10/24 11:22:33 ERROR: message
 ```
 
-パラメータを変更する場合は `logging.NewLogger` を呼び出す前に値を変更しておく。  
-下記は設定できるパラメータとデフォルト値の例。  
+オプションを変更する場合は、まず `Logging.NewHandler` でハンドラを取得して変更してから `logging.NewLoggerFromHandler` を呼び出してロガーを生成する。  
+下記サンプルコードは変更可能なオプションとデフォルト値の例。  
 
 ```go
-// 出力するログレベル
-logging.Level = slog.LevelInfo
+func main() {
+    // ハンドラ生成
+    handler := logging.NewHandler("log.txt")
 
-// ログを標準出力にも出力するかどうか
-logging.WithStdout = true
+    // オプションを変更
 
-// ログファイルの最大サイズ(MB)
-// このサイズを超えるとログローテーションする
-logging.MaxSizeMB = 1
+    // 出力するログレベル
+    handler.Option.Level = slog.LevelInfo
+    // ログを標準出力にも出力するかどうか
+    handler.WithStdout = true
 
-// バックアップファイルの最大数
-// 0 の場合は上限なし
-logging.MaxBackups = 10
+    // フォーマットを変更
 
-// バックアップファイルの最大保持日数
-// 0 の場合は上限なし
-logging.MaxAge = 0
+    // ログ全体のフォーマット
+	handler.Format.Line = fmt.Sprintf("%s %s %s: %s", FDatetime, FLevel, FAttrs, FMessage)
+    // 日時のフォーマット
+	handler.Format.Datetime = "2006/01/02 15:04:05"
+    // 属性のキーと値の間の文字
+	handler.Format.AttrBetween = "="
+    // 属性と属性の間の区切り文字
+	handler.Format.AttrDelimiter = ", "
+    // 属性リストの接頭辞
+	handler.Format.AttrPrefix = "["
+    // 属性リストの接尾辞
+	handler.Format.AttrSufix = "]"
 
-// バックアップファイルの時刻をローカルタイムにするかどうか
-logging.LocalTime = true
+    // ローテーションの動作を変更
 
-// バックアップファイルを gzip 圧縮するかどうか
-logging.Compress = false
+    // ログファイルの最大サイズ(MB)
+    // このサイズを超えるとログローテーションする
+    handler.RotateLogger.MaxSizeMB = 1
+    // バックアップファイルの最大数
+    // 0 の場合は上限なし
+    handler.RotateLogger.MaxBackups = 10
+    // バックアップファイルの最大保持日数
+    // 0 の場合は上限なし
+    handler.RotateLogger.MaxAge = 0
+    // バックアップファイルの時刻をローカルタイムにするかどうか
+    handler.RotateLogger.LocalTime = true
+    // バックアップファイルを gzip 圧縮するかどうか
+    handler.RotateLogger.Compress = false
+
+    // ロガー生成
+    logger := logging.NewLogger(handler)
+}
 ```
