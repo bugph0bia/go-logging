@@ -13,6 +13,7 @@ import "github.com/bugph0bia/go-logging"
 func main() {
     // デフォルトパラメータでロガー生成
     logger := logging.NewLogger("log.txt")
+
     // ログ出力
     logger.Debug("message")
     logger.Info("message", "attr1", 10)
@@ -46,17 +47,19 @@ func main() {
     // フォーマットを変更
 
     // ログ全体のフォーマット
-	handler.Format.Line = fmt.Sprintf("%s %s %s: %s", FDatetime, FLevel, FAttrs, FMessage)
+    handler.Format.Line = fmt.Sprintf("${Datetime} ${Level} ${Attrs}: ${Message}")
+    // ログ全体のフォーマット（定数を利用）
+    handler.Format.Line = fmt.Sprintf("%s %s %s: %s", logging.FDatetime, logging.FLevel, logging.FAttrs, logging.FMessage)
     // 日時のフォーマット
-	handler.Format.Datetime = "2006/01/02 15:04:05"
+    handler.Format.Datetime = "2006/01/02 15:04:05"
     // 属性のキーと値の間の文字
-	handler.Format.AttrBetween = "="
+    handler.Format.AttrBetween = "="
     // 属性と属性の間の区切り文字
-	handler.Format.AttrDelimiter = ", "
+    handler.Format.AttrDelimiter = ", "
     // 属性リストの接頭辞
-	handler.Format.AttrPrefix = "["
+    handler.Format.AttrPrefix = "["
     // 属性リストの接尾辞
-	handler.Format.AttrSufix = "]"
+    handler.Format.AttrSufix = "]"
 
     // ローテーションの動作を変更
 
@@ -74,7 +77,7 @@ func main() {
     // バックアップファイルを gzip 圧縮するかどうか
     handler.RotateLogger.Compress = false
 
-    // ロガー生成
-    logger := logging.NewLogger(handler)
+    // パラメータ設定したハンドラーからロガー生成
+    logger := logging.NewLoggerFromHandler(handler)
 }
 ```
