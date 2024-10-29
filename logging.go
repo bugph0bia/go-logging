@@ -30,7 +30,7 @@ type Format struct {
 	AttrBetween   string // 属性のキーと値の間の文字
 	AttrDelimiter string // 属性と属性の間の区切り文字
 	AttrPrefix    string // 属性リストの接頭辞
-	AttrSufix     string // 属性リストの接尾辞
+	AttrSuffix    string // 属性リストの接尾辞
 }
 
 // ロギングハンドラ
@@ -74,7 +74,7 @@ func NewHandler(fname string) *Handler {
 			AttrBetween:   "=",
 			AttrDelimiter: ", ",
 			AttrPrefix:    "[",
-			AttrSufix:     "]",
+			AttrSuffix:    "]",
 		},
 	}
 }
@@ -95,7 +95,7 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 		return true
 	})
 	if len(as) > 0 {
-		attrs = h.Format.AttrPrefix + strings.Join(as, h.Format.AttrDelimiter) + h.Format.AttrSufix
+		attrs = h.Format.AttrPrefix + strings.Join(as, h.Format.AttrDelimiter) + h.Format.AttrSuffix
 	}
 
 	// 指定されたフォーマットでログを構築

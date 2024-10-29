@@ -181,7 +181,7 @@ func TestFormat(t *testing.T) {
 	handler.Format.AttrBetween = "=>"
 	handler.Format.AttrDelimiter = " | "
 	handler.Format.AttrPrefix = "{ "
-	handler.Format.AttrSufix = " }"
+	handler.Format.AttrSuffix = " }"
 	logger := NewLoggerFromHandler(handler)
 
 	// 標準出力フック開始

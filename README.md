@@ -1,9 +1,8 @@
 # go-logging
 
-slog と lumberjack を組み合わせた簡易ロギング＆ログローテーション  
+Simple logging & log rotation using slog and lumberjack
 
-
-## 使用方法
+## Usage
 
 ```go
 package main
@@ -11,17 +10,17 @@ package main
 import "github.com/bugph0bia/go-logging"
 
 func main() {
-    // デフォルトパラメータでロガー生成
+    // Create logger with default values
     logger := logging.NewLogger("log.txt")
 
-    // ログ出力
+    // output logs
     logger.Debug("message")
     logger.Info("message", "attr1", 10)
     logger.Warn("message", "attr1", 10, "attr2", 20)
     logger.Error("message")
 }
 
-// 以下のフォーマットでログが出力される
+// The log output is follow:
 //
 // 2024/10/24 11:22:33 DEBUG: message
 // 2024/10/24 11:22:33 INFO [attr1=10]: message
@@ -32,52 +31,72 @@ func main() {
 オプションを変更する場合は、まず `Logging.NewHandler` でハンドラを取得して変更してから `logging.NewLoggerFromHandler` を呼び出してロガーを生成する。  
 下記サンプルコードは変更可能なオプションとデフォルト値の例。  
 
+To change an option, first get the handler with `Logging.NewHandler`, change options, and then call `logging.NewLoggerFromHandler` to create the logger.  
+The sample code below is an example of the options that can be changed and their default values.  
+
 ```go
 func main() {
-    // ハンドラ生成
+    // Create handler
     handler := logging.NewHandler("log.txt")
 
-    // オプションを変更
 
-    // 出力するログレベル
+    //////// Change log output behavior ////////
+
+    // Output log level
     handler.Option.Level = slog.LevelInfo
-    // ログを標準出力にも出力するかどうか
+
+    // Flag to output log to stdout
     handler.WithStdout = true
 
-    // フォーマットを変更
+    //////// Change log format ////////
 
-    // ログ全体のフォーマット
+    // Format of log line (Use tag string)
     handler.Format.Line = fmt.Sprintf("${Datetime} ${Level} ${Attrs}: ${Message}")
-    // ログ全体のフォーマット（定数を利用）
+
+    // Format of log line (Use const values)
     handler.Format.Line = fmt.Sprintf("%s %s %s: %s", logging.FDatetime, logging.FLevel, logging.FAttrs, logging.FMessage)
-    // 日時のフォーマット
+
+    // Format of datetime
     handler.Format.Datetime = "2006/01/02 15:04:05"
-    // 属性のキーと値の間の文字
+
+    // Character between the key and value of the attribute
     handler.Format.AttrBetween = "="
-    // 属性と属性の間の区切り文字
+
+    // Separator between attributes
     handler.Format.AttrDelimiter = ", "
-    // 属性リストの接頭辞
+
+    // Attribute list prefix
     handler.Format.AttrPrefix = "["
-    // 属性リストの接尾辞
-    handler.Format.AttrSufix = "]"
 
-    // ローテーションの動作を変更
+    // Attribute list suffix
+    handler.Format.AttrSuffix = "]"
 
-    // ログファイルの最大サイズ(MB)
-    // このサイズを超えるとログローテーションする
+    //////// Change log rotation ////////
+
+    // Max size of a log file (MB)
+    // Rotate beyond this size
     handler.RotateLogger.MaxSizeMB = 1
-    // バックアップファイルの最大数
-    // 0 の場合は上限なし
+
+    // Maximum number of backup files
+    // If zero, no limit
     handler.RotateLogger.MaxBackups = 10
-    // バックアップファイルの最大保持日数
-    // 0 の場合は上限なし
+
+    // Maximum number of days to keep backup files
+    // If zero, no limit
     handler.RotateLogger.MaxAge = 0
-    // バックアップファイルの時刻をローカルタイムにするかどうか
+
+    // Flag to set backup file time to local time
     handler.RotateLogger.LocalTime = true
-    // バックアップファイルを gzip 圧縮するかどうか
+
+    // Flag to gzip compress backup files
     handler.RotateLogger.Compress = false
 
-    // パラメータ設定したハンドラーからロガー生成
+
+    // Create Logger
     logger := logging.NewLoggerFromHandler(handler)
 }
 ```
+
+## Thanks
+
+- [lumberjack](https://github.com/natefinch/lumberjack)
