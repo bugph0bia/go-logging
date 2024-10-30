@@ -28,9 +28,6 @@ func main() {
 // 2024/10/24 11:22:33 ERROR: message
 ```
 
-オプションを変更する場合は、まず `Logging.NewHandler` でハンドラを取得して変更してから `logging.NewLoggerFromHandler` を呼び出してロガーを生成する。  
-下記サンプルコードは変更可能なオプションとデフォルト値の例。  
-
 To change an option, first get the handler with `Logging.NewHandler`, change options, and then call `logging.NewLoggerFromHandler` to create the logger.  
 The sample code below is an example of the options that can be changed and their default values.  
 
