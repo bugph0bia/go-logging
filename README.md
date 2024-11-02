@@ -4,6 +4,8 @@ Simple logging & log rotation using slog and lumberjack
 
 ## Usage
 
+### Simple to use
+
 ```go
 package main
 
@@ -27,6 +29,28 @@ func main() {
 // 2024/10/24 11:22:33 WARN [attr1=10, attr2=20]: message
 // 2024/10/24 11:22:33 ERROR: message
 ```
+
+### If you don't want to pass loggers between functions
+
+```go
+package main
+
+import (
+    "log/slog"
+
+    "github.com/bugph0bia/go-logging"
+)
+
+func main() {
+    // Create logger and give to slog.
+    slog.SetDefault(logging.NewLogger("log.txt"))
+
+    // output logs
+    slog.Debug("message")
+}
+```
+
+### Options
 
 To change an option, first get the handler with `Logging.NewHandler`, change options, and then call `logging.NewLoggerFromHandler` to create the logger.  
 The sample code below is an example of the options that can be changed and their default values.  
