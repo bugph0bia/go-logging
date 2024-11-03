@@ -67,7 +67,7 @@ func main() {
     handler.Option.Level = slog.LevelInfo
 
     // Flag to output log to stdout
-    handler.WithStdout = true
+    handler.Option.WithStdout = true
 
     //////// Change log format ////////
 
